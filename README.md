@@ -277,6 +277,4 @@ docker compose down -v           # stop and wipe volumes
 - **Database issues** → migrations run automatically at startup; check `docker compose logs <service>` for `prisma migrate deploy` output
 - **Frontend can't reach the API** → the nginx config proxies `/api` to the gateway; verify the gateway is up on :8000
 
----
 
-*University project — Software Engineering course. For educational purposes.*
