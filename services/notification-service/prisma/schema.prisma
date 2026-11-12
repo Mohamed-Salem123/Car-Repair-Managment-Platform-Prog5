@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+// Admin users registered to receive system notifications
+// (a notification service cannot query identity_db, so admins
+// self-register here when they sign in).
+model AdminRecipient {
+  userId String @id
+
+  @@map("admin_recipients")
+}

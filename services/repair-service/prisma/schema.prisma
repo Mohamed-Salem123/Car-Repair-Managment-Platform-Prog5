@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vehicle {
+  id           String        @id @default(uuid())
+  customerId   String
+  make         String
+  model        String
+  year         Int
+  plateNumber  String        @unique
+  color        String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  repairOrders RepairOrder[]
+
+  @@map("vehicles")
+}
+
+model RepairOrder {
+  id                  String        @id @default(uuid())
+  customerId          String
+  vehicleId           String
+  problemDescription  String
+  handoverDate        String
+  handoverTime        String
+  diagnosis           String?
+  requiredWork        String?
+  estimatedCost       Float?
+  expectedPickupDate  String?
+  status              RepairStatus  @default(SUBMITTED)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  vehicle             Vehicle       @relation(fields: [vehicleId], references: [id])
+  photos              RepairPhoto[]
+
+  @@map("repair_orders")
+}
+
+model RepairPhoto {
+  id            String      @id @default(uuid())
+  repairOrderId String
+  fileName      String
+  filePath      String
+  mimeType      String
+  createdAt     DateTime    @default(now())
+  repairOrder   RepairOrder @relation(fields: [repairOrderId], references: [id], onDelete: Cascade)
+
+  @@map("repair_photos")
+}
+
+enum RepairStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  DIAGNOSED
+  APPROVED
+  IN_PROGRESS
+  READY_FOR_PICKUP
+  COMPLETED
+}
